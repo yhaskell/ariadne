@@ -1,5 +1,5 @@
 import DbSet from './db-set'
-import { $dbSets } from './symbols'
+import { $dbSets } from '../symbols'
 
 export default class DbContext {
     constructor() {

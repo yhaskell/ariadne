@@ -1,7 +1,7 @@
 import 'reflect-metadata'
-import { $tableName, $fields, $typeFor } from './symbols'
+import { $tableName, $fields, $typeFor } from '../symbols'
 
-type Selector<T> = { [K in keyof T]: Where<T, T[K]> }
+export type Selector<T> = { [K in keyof T]: Where<T, T[K]> }
 
 export default class DbSet<T> {
     where: Selector<T>
@@ -35,7 +35,7 @@ export default class DbSet<T> {
 
 }
 
-class ConstrainedDbSet<T> extends DbSet<T> {
+export class ConstrainedDbSet<T> extends DbSet<T> {
     or: Selector<T>
 
     private constraints: string[];
@@ -57,7 +57,7 @@ class ConstrainedDbSet<T> extends DbSet<T> {
 }
 
 
-class Where<T, K> {
+export class Where<T, K> {
     constructor(private previous: DbSet<T>, private field: string, private begin: string) {}
     eql(value: K):  ConstrainedDbSet<T> {
         const next = new ConstrainedDbSet<T>(this.previous, [`${this.begin} ${this.field} = "${value}"`])

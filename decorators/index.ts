@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import { $tableName, $fields, $dbSets } from './symbols'
+import { $tableName, $fields, $dbSets } from '../symbols'
 
 
 function appendMetadata(sym: Symbol, convert: (key: string) => any) {
