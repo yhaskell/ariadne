@@ -1,7 +1,7 @@
 {
   "name": "ariadne",
   "description": "Ariadne - Extensible ORM for TypeScript",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "main": "/lib/index.js",
   "repository": {
     "url": "https://github.com/yhaskell/ariadne.git",
