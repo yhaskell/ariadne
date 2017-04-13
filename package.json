@@ -1,7 +1,7 @@
 {
   "name": "ariadne",
   "description": "Ariadne - Extensible ORM for TypeScript",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "./lib/index.js",
   "scripts": {
     "build": "tsc"
@@ -12,7 +12,9 @@
   },
   "author": "Igor N. Dultsev <yhaskell@live.com>",
   "license": "MIT",
-  "peerDependencies": {
+  "dependencies": {
+    "@types/node": "^7.0.12",
+    "@types/reflect-metadata": "^0.0.5",
     "reflect-metadata": "^0.1.10"
   }
 }
