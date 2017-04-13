@@ -1,4 +1,4 @@
-*^\.^d.ts
+*.ts
+!*.d.ts
 /examples
 /.vscode
-.git

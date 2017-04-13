@@ -49,4 +49,3 @@ yarn.lock
 
 # Generated packages
 ariadne-*.tgz
-*.d.ts
