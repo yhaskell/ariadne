@@ -46,3 +46,6 @@ yarn.lock
 # Generated JavaScript files
 /**/*.js
 /**/*.js.map
+
+# Generated packages
+ariadne-*.tgz
