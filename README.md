@@ -13,7 +13,7 @@ Example:
 ```typescript
 
 import { DbContext, DbSet } from 'ariadne'
-import { dbset, field, model} from 'ariadne/decorators'
+import { dbset, field, model } from 'ariadne/decorators'
 
 @model('users') class User {
     @field('id', true) public id: number /* specify a primary key */

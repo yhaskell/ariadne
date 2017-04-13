@@ -1,5 +1,5 @@
 import { DbContext, DbSet } from '../lib' /* from 'ariadne' */
-import { dbset, field, model} from '../decorators' /* from 'ariadne/decorators' */
+import { dbset, field, model } from '../decorators' /* from 'ariadne/decorators' */
 
 import { createHash } from 'crypto'
 
