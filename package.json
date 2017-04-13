@@ -1,0 +1,12 @@
+{
+  "name": "ariadne",
+  "description": "Ariadne - Extensible ORM for TypeScript",
+  "version": "1.0.0",
+  "main": "/lib/index.js",
+  "repository": {
+    "url": "https://github.com/yhaskell/ariadne.git",
+    "type": "git"
+  },
+  "author": "Igor N. Dultsev <yhaskell@live.com>",
+  "license": "MIT"
+}
