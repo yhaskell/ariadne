@@ -5,7 +5,7 @@ import { createHash } from 'crypto'
 
 const hash = (value: string) => createHash('sha256').update(value).digest('base64')
 
-@model('users') class User {
+class User {
     @field('id', true) public id: number
 
     @field() email: string
@@ -14,8 +14,17 @@ const hash = (value: string) => createHash('sha256').update(value).digest('base6
     set password(value: string) { this.passwordHash = hash(value) }
 }
 
+enum Sex { Male, Female, Unspecified }
+
+class Persona {
+    @field('id', true) public id: number
+    @field() name: string
+    @field() sex: Sex
+}
+
 class MyDbContext extends DbContext {
     @dbset(User) users: DbSet<User>
+    @dbset(Persona) personas: DbSet<Persona>
 }
 
 const dc = new MyDbContext()
@@ -32,7 +41,8 @@ Promise.all([
     dc.users
         .where.id.between(24, 42),
     dc.users
-        .where.email.in(['vasya@pupkin.com', 'vasya.pupkin@gmail.com', 'vasya.pupkin@outlook.com'])
+        .where.email.in(['vasya@pupkin.com', 'vasya.pupkin@gmail.com', 'vasya.pupkin@outlook.com']),
+    dc.personas
 
 ].map(u => u.values())).then(values => {
     //console.log('returned ' + values)

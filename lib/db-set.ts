@@ -1,4 +1,5 @@
 import 'reflect-metadata'
+import * as pluralize from 'pluralize'
 import { $tableName, $fields, $typeFor } from '../symbols'
 
 export type Selector<T> = { [K in keyof T]: Where<T, T[K]> }
@@ -7,7 +8,8 @@ export default class DbSet<T> {
     where: Selector<T>
 
     protected get tableName() {
-        return Reflect.getMetadata($tableName, this[$typeFor])
+        return Reflect.getMetadata($tableName, this[$typeFor]) 
+            || pluralize((<Function>this[$typeFor]).name.toLowerCase())
     }
 
     async values() {
