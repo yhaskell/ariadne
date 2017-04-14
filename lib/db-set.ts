@@ -60,7 +60,11 @@ export class ConstrainedDbSet<T> extends DbSet<T> {
 
 
 export class Where<T, K> {
-    constructor(private previous: DbSet<T>, private field: string, private begin: string) {}
+    constructor(private previous: DbSet<T>, private field: string, private begin: string) {
+        this.not = new WhereNot(previous, field, begin)
+    }
+    
+    not: WhereNot<T, K>
     eql(value: K):  ConstrainedDbSet<T> {
         const next = new ConstrainedDbSet<T>(this.previous, [`${this.begin} ${this.field} = "${value}"`])
         return next;
@@ -82,6 +86,33 @@ export class Where<T, K> {
             .map(v => `"${v}"`)
             .join(', ')
         const next = new ConstrainedDbSet<T>(this.previous, [`${this.begin} ${this.field} in (${valuesStr})`])
+        return next;
+    }
+}
+
+export class WhereNot<T, K> {
+    constructor(private previous: DbSet<T>, private field: string, private begin: string) {}
+    eql(value: K):  ConstrainedDbSet<T> {
+        const next = new ConstrainedDbSet<T>(this.previous, [`${this.begin} ${this.field} != "${value}"`])
+        return next;
+    }
+    greater(value: K):  ConstrainedDbSet<T> {
+        const next = new ConstrainedDbSet<T>(this.previous, [`${this.begin} ${this.field} <= "${value}"`])
+        return next;
+    }
+    less(value: K):  ConstrainedDbSet<T> {
+        const next = new ConstrainedDbSet<T>(this.previous, [`${this.begin} ${this.field} >= "${value}"`])
+        return next;
+    }
+    between(from: K, to: K):  ConstrainedDbSet<T> {
+        const next = new ConstrainedDbSet<T>(this.previous, [`${this.begin} ${this.field} not between "${from}" and "${to}"`])
+        return next;
+    }
+    in(values: K[]): ConstrainedDbSet<T> {
+        const valuesStr = values
+            .map(v => `"${v}"`)
+            .join(', ')
+        const next = new ConstrainedDbSet<T>(this.previous, [`${this.begin} ${this.field} not in (${valuesStr})`])
         return next;
     }
 }

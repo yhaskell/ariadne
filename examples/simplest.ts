@@ -38,6 +38,8 @@ Promise.all([
     dc.users
         .where.id.eql(42)
         .where.email.eql('root@root.root'),
+    dc.personas
+        .where.id.not.eql(24),
     dc.users
         .where.id.between(24, 42),
     dc.users
