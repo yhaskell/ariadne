@@ -5,19 +5,16 @@ export type Selector<T> = { [K in keyof T]: Where<T, T[K]> }
 export default class DbSet<T> {
     where: Selector<T>
 
-    private options: {
+    private _options: {
         context: DbContext
         dataType: Function
         tableName: string
     }
-    protected get tableName() {
-        return Metadata.tableName(this.options.dataType)
-    }
+
+    get options() { return { ...this._options }}
 
     async values() {
-        const query = `select * from ${this.tableName}`
-        console.log("QUERY: " + query)
-        return query
+        return this.options.context.provider.resolve(this)
     }
 
     protected getFields(): Metadata.FieldMetadataWithKey[] {
@@ -36,10 +33,10 @@ export default class DbSet<T> {
     constructor(previous: DbSet<T>);
     constructor(prevopts: DbSet<T> | { type: Function; context: DbContext, tableName?: string } ) {
         if (prevopts instanceof DbSet) {
-            this.options = prevopts.options
+            this._options = prevopts.options
             this.where = prevopts.where
         } else {
-            this.options = {
+            this._options = {
                 context: prevopts.context,
                 dataType: prevopts.type,
                 tableName: prevopts.tableName || Metadata.tableName(prevopts.type)
@@ -58,22 +55,16 @@ export class ConstrainedDbSet<T> extends DbSet<T> {
         return this[orKey] || (this[orKey] = this.generate("or"))
     }
 
-    private constraints: string[];
+    private _constraints: string[]
+
+    get constraints() { return [...this._constraints] }
 
     constructor(previous: DbSet<T>, additionalConstraints: string[] = []) {
         super(previous)
         
-        const prevConstraints = (previous instanceof ConstrainedDbSet ? previous.constraints : ['true'])
-        this.constraints = prevConstraints.concat(additionalConstraints)
+        const prevConstraints = (previous instanceof ConstrainedDbSet ? previous._constraints : ['true'])
+        this._constraints = prevConstraints.concat(additionalConstraints)
     }
-
-    async values() {
-        const clause = this.constraints.join(" ").replace("true and ", "")
-        const query = `select * from ${this.tableName} where ${clause}`
-        console.log("QUERY: " + query)
-        return query
-    }
-
 }
 
 
