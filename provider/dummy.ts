@@ -44,4 +44,4 @@ export class DummyProviderFactory implements IProviderFactory {
 ProviderService.register(new DummyProviderFactory())
 
 
-// TODO: remove to 'ariadne-dummy' package
+// TODO: remove to 'ariadne-provider-dummy' package
