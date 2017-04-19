@@ -1,25 +1,9 @@
 import 'reflect-metadata'
-import { $tableName, $fields, $dbSets } from '../symbols'
+import * as Metadata from '../metadata'
 
+export const model = Metadata.decorators.tableName
 
-function appendMetadata(sym: Symbol, convert: (key: string) => any) {
-    return (target, key: string) => {
-        const elems = Reflect.getMetadata(sym, target.constructor) || []
-        elems.push(convert ? convert(key) : key)
-        Reflect.defineMetadata(sym, elems, target.constructor)
-    }
-}
+export const dbset = (type: Function) => Metadata.decorators.dbset(type)
 
-export function model(tableName) {
-    return (target) => {
-        Reflect.defineMetadata($tableName, tableName, target)
-    }
-}
-
-export function field(name?: string, primary?: boolean) {
-    return appendMetadata($fields, key => ({ key, name: name || key, primary }))
-}
-
-export function dbset(type: Function) {
-    return appendMetadata($dbSets, key => ({key, type}))
-}
+export const field = (options?: Metadata.FieldMetadata) => Metadata.decorators.fields(options || {})
+export const primary = (name?: string, type?: Function) => Metadata.decorators.fields({ primary: true, name, type})
