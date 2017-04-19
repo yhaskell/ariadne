@@ -27,43 +27,50 @@ class MyDbContext extends DbContext { /* This context will be used to provide ac
     @dbset(User) users: DbSet<User>
 }
 
-const dc = new MyDbContext('dummy://localhost/testdb') /*   Connected to testdb on localhost:8246
-                                                            Connection id: 1f2fcff9-1377-4d47-96a9-506d4523e0f2 */
+const dc = new MyDbContext('dummy://localhost/testdb') 
+/*  Connected to testdb on localhost:8246
+    Connection id: 1f2fcff9-1377-4d47-96a9-506d4523e0f2 */
 
 /* Currently it just outputs things it will select */
-// select all elements from users table
-dc.users.values()  /*   on connection 1f2fcff9-1377-4d47-96a9-506d4523e0f2
-                        on table users
-                        get all elements */
+
+dc.users.values()  
+/*  on connection 1f2fcff9-1377-4d47-96a9-506d4523e0f2
+    on table users
+    get all elements */
 
 
 dc.users
     .where.email.eql('vasya@pupkin.com')
     .or.email.eql('vasya.pupkin@gmail.com')
-    .values()       /*  on connection 1f2fcff9-1377-4d47-96a9-506d4523e0f2
-                        on table users
-                        get all elements with following constraints:
-                        email = "vasya@pupkin.com"
-                        or email = "vasya.pupkin@gmail.com" */
+    .values()       
+/*  on connection 1f2fcff9-1377-4d47-96a9-506d4523e0f2
+    on table users
+    get all elements with following constraints:
+    email = "vasya@pupkin.com"
+    or email = "vasya.pupkin@gmail.com" */
 
 dc.users
     .where.id.eql(42)
     .where.email.eql('root@root.root')
-    .values()       /*  on connection 1f2fcff9-1377-4d47-96a9-506d4523e0f2
-                        on table users
-                        get all elements with following constraints:
-                        email = "root@root.root" */
+    .values()       
+/*  on connection 1f2fcff9-1377-4d47-96a9-506d4523e0f2
+    on table users
+    get all elements with following constraints:
+    email = "root@root.root" */
 
 dc.users
     .where.id.between(24, 42)
-    .values()       /*  on connection 1f2fcff9-1377-4d47-96a9-506d4523e0f2
-                        on table users
-                        get all elements with following constraints:
-                        id between "24" and "42" */
+    .values()       
+/*  on connection 1f2fcff9-1377-4d47-96a9-506d4523e0f2
+    on table users
+    get all elements with following constraints:
+    id between "24" and "42" */
 
 dc.users
     .where.email.in(['vasya@pupkin.com', 'vasya.pupkin@gmail.com', 'vasya.pupkin@outlook.com'])
-    .values()       /*  on connection 1f2fcff9-1377-4d47-96a9-506d4523e0f2
-                        on table personas
-                        get all elements */
+    .values()       
+/*  on connection 1f2fcff9-1377-4d47-96a9-506d4523e0f2
+    on table users
+    get all elements with following constraints:
+    email in ("vasya@pupkin.com", "vasya.pupkin@gmail.com", "vasya.pupkin@outlook.com") */
 ```
