@@ -1,12 +1,12 @@
 import { DbContext, DbSet } from '../index' /* from 'ariadne' */
-import { dbset, field, model } from '../decorators' /* from 'ariadne/decorators' */
+import { dbset, field, primary, model } from '../decorators' /* from 'ariadne/decorators' */
 
 import { createHash } from 'crypto'
 
 const hash = (value: string) => createHash('sha256').update(value).digest('base64')
 
 class User {
-    @field('id', true) public id: number
+    @primary() public id: number
 
     @field() email: string
     @field() passwordHash: string
@@ -17,7 +17,7 @@ class User {
 enum Sex { Male, Female, Unspecified }
 
 class Persona {
-    @field('id', true) public id: number
+    @primary() public id: number
     @field() name: string
     @field() sex: Sex
 }

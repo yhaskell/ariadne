@@ -1,15 +1,17 @@
-import 'reflect-metadata'
-import * as pluralize from 'pluralize'
-import { $tableName, $fields, $typeFor } from '../symbols'
-
+import DbContext from './db-context'
+import * as Metadata from '../metadata'
 export type Selector<T> = { [K in keyof T]: Where<T, T[K]> }
 
 export default class DbSet<T> {
     where: Selector<T>
 
+    private options: {
+        context: DbContext
+        dataType: Function
+        tableName: string
+    }
     protected get tableName() {
-        return Reflect.getMetadata($tableName, this[$typeFor]) 
-            || pluralize((<Function>this[$typeFor]).name.toLowerCase())
+        return Metadata.tableName(this.options.dataType)
     }
 
     async values() {
@@ -18,8 +20,8 @@ export default class DbSet<T> {
         return query
     }
 
-    protected getFields(): { key: string, name: string, primary: boolean}[] {
-        return Reflect.getMetadata($fields,  this[$typeFor])
+    protected getFields(): Metadata.FieldMetadataWithKey[] {
+        return Metadata.fields(this.options.dataType)
     }
     protected generate(bgn: string): Selector<T> {
         const fields = this.getFields()
@@ -30,23 +32,39 @@ export default class DbSet<T> {
         return <Selector<T>>ret;
     }
 
-    constructor(typeFor: Function) {
-        this[$typeFor] = typeFor
-        this.where = this.generate("and");
+    constructor(options:{ type: Function; context: DbContext });
+    constructor(previous: DbSet<T>);
+    constructor(prevopts: DbSet<T> | { type: Function; context: DbContext, tableName?: string } ) {
+        if (prevopts instanceof DbSet) {
+            this.options = prevopts.options
+            this.where = prevopts.where
+        } else {
+            this.options = {
+                context: prevopts.context,
+                dataType: prevopts.type,
+                tableName: prevopts.tableName || Metadata.tableName(prevopts.type)
+            }
+            this.where = this.generate("and");
+        }
+        
     }
 
 }
 
 export class ConstrainedDbSet<T> extends DbSet<T> {
-    or: Selector<T>
+    
+    get or(): Selector<T> {
+        const orKey = Symbol.for("ariadne:dbset:constrained")
+        return this[orKey] || (this[orKey] = this.generate("or"))
+    }
 
     private constraints: string[];
 
     constructor(previous: DbSet<T>, additionalConstraints: string[] = []) {
-        super(previous[$typeFor])
+        super(previous)
+        
         const prevConstraints = (previous instanceof ConstrainedDbSet ? previous.constraints : ['true'])
         this.constraints = prevConstraints.concat(additionalConstraints)
-        this.or = this.generate("or");
     }
 
     async values() {
