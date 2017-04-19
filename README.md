@@ -13,10 +13,11 @@ Example:
 ```typescript
 
 import { DbContext, DbSet } from 'ariadne'
-import { dbset, field, model } from 'ariadne/decorators'
+import { dbset, field, primary } from 'ariadne/decorators'
+import 'ariadne-provider-dummy'
 
-@model('users') class User {
-    @field('id', true) public id: number /* specify a primary key */
+class User {
+    @primary() public id: number /* specify a primary key */
 
     @field() email: string
     @field() password: string
@@ -26,26 +27,43 @@ class MyDbContext extends DbContext { /* This context will be used to provide ac
     @dbset(User) users: DbSet<User>
 }
 
-const dc = new MyDbContext()
-/* Currently it just outputs some SQL */
-// select * from users
-dc.users.values() 
+const dc = new MyDbContext('dummy://localhost/testdb') /*   Connected to testdb on localhost:8246
+                                                            Connection id: 1f2fcff9-1377-4d47-96a9-506d4523e0f2 */
 
-// select * from users where email = "vasya@pupkin.com" or email = "vasya.pupkin@gmail.com"
+/* Currently it just outputs things it will select */
+// select all elements from users table
+dc.users.values()  /*   on connection 1f2fcff9-1377-4d47-96a9-506d4523e0f2
+                        on table users
+                        get all elements */
+
+
 dc.users
     .where.email.eql('vasya@pupkin.com')
-    .or.email.eql('vasya.pupkin@gmail.com') 
+    .or.email.eql('vasya.pupkin@gmail.com')
+    .values()       /*  on connection 1f2fcff9-1377-4d47-96a9-506d4523e0f2
+                        on table users
+                        get all elements with following constraints:
+                        email = "vasya@pupkin.com"
+                        or email = "vasya.pupkin@gmail.com" */
 
-// select * from users where id = "42" and email = "root@root.root"
 dc.users
     .where.id.eql(42)
-    .where.email.eql('root@root.root'),
+    .where.email.eql('root@root.root')
+    .values()       /*  on connection 1f2fcff9-1377-4d47-96a9-506d4523e0f2
+                        on table users
+                        get all elements with following constraints:
+                        email = "root@root.root" */
 
-// select * from users where id between "24" and "42"
 dc.users
-    .where.id.between(24, 42),
+    .where.id.between(24, 42)
+    .values()       /*  on connection 1f2fcff9-1377-4d47-96a9-506d4523e0f2
+                        on table users
+                        get all elements with following constraints:
+                        id between "24" and "42" */
 
-// select * from users where email in ("vasya@pupkin.com", "vasya.pupkin@gmail.com", "vasya.pupkin@outlook.com")
 dc.users
     .where.email.in(['vasya@pupkin.com', 'vasya.pupkin@gmail.com', 'vasya.pupkin@outlook.com'])
+    .values()       /*  on connection 1f2fcff9-1377-4d47-96a9-506d4523e0f2
+                        on table personas
+                        get all elements */
 ```
