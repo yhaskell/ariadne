@@ -1,7 +1,8 @@
 import { DbContext, DbSet } from '../index' /* from 'ariadne' */
-import { dbset, field, primary, model } from '../decorators' /* from 'ariadne/decorators' */
-
+import { dbset, field, primary } from '../decorators' /* from 'ariadne/decorators' */
 import { createHash } from 'crypto'
+
+import '../provider/dummy'
 
 const hash = (value: string) => createHash('sha256').update(value).digest('base64')
 
@@ -27,7 +28,7 @@ class MyDbContext extends DbContext {
     @dbset(Persona) personas: DbSet<Persona>
 }
 
-const dc = new MyDbContext()
+const dc = new MyDbContext('dummy://localhost/testdb')
 
 
 Promise.all([
