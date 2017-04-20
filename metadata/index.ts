@@ -33,7 +33,7 @@ export const fields = target => <FieldMetadataWithKey[]> Reflect.getMetadata($fi
 /* dbsets */
 
 const $dbSets = Symbol("ariadne:dbsets")
-export const dbset = target => Reflect.getMetadata($dbSets, target)
+export const dbset = target => <{key: string; type: Function}[]>Reflect.getMetadata($dbSets, target)
 
 export const decorators = {
     tableName: (name: string) => {
