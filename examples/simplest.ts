@@ -1,19 +1,11 @@
 import { DbContext, DbSet } from '../index' /* from 'ariadne' */
 import { dbset, field, primary } from '../decorators' /* from 'ariadne/decorators' */
 import { createHash } from 'crypto'
+import * as SchemaService from '../schema'
 
 import '../provider/dummy'
 
 const hash = (value: string) => createHash('sha256').update(value).digest('base64')
-
-class User {
-    @primary() public id: number
-
-    @field() email: string
-    @field() passwordHash: string
-
-    set password(value: string) { this.passwordHash = hash(value) }
-}
 
 enum Sex { Male, Female, Unspecified }
 
@@ -22,6 +14,19 @@ class Persona {
     @field() name: string
     @field() sex: Sex
 }
+
+class User {
+    @primary() public id: number
+
+    @field() email: string
+    @field() passwordHash: string
+
+    @field() persona: Persona
+
+    set password(value: string) { this.passwordHash = hash(value) }
+}
+
+
 
 class MyDbContext extends DbContext {
     @dbset(User) users: DbSet<User>
@@ -51,3 +56,16 @@ Promise.all([
     //console.log('returned ' + values)
     process.exit(0)
 })
+
+
+let schema = {}
+let schemaMap = SchemaService.generate(dc)
+schemaMap.forEach((value, key) => schema[key] = value)
+
+const schemaJSON = JSON.stringify(schema, (k, v) => {
+    if (v instanceof SchemaService.DataType) return `[${v.typeName}]`
+    else return v
+}, 2)
+    
+require('fs').writeFileSync('db-schema.json', schemaJSON)
+
