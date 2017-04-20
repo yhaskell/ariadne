@@ -1,7 +1,7 @@
 import { DbContext, DbSet } from '../index' /* from 'ariadne' */
 import { dbset, field, primary } from '../decorators' /* from 'ariadne/decorators' */
 import { createHash } from 'crypto'
-import * as SchemaService from '../schema'
+import * as SchemaServices from '../schema'
 
 import '../provider/dummy'
 
@@ -58,14 +58,8 @@ Promise.all([
 })
 
 
-let schema = {}
-let schemaMap = SchemaService.generate(dc)
-schemaMap.forEach((value, key) => schema[key] = value)
+let schemas = SchemaServices.generate(dc)
 
-const schemaJSON = JSON.stringify(schema, (k, v) => {
-    if (v instanceof SchemaService.DataType) return `[${v.typeName}]`
-    else return v
-}, 2)
-    
-require('fs').writeFileSync('db-schema.json', schemaJSON)
+SchemaServices.prettyPrint(schemas)
+
 
