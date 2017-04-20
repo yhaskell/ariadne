@@ -3,7 +3,7 @@ import { primary } from '../decorators';
 import DbContext from '../lib/db-context'
 import DbSet from '../lib/db-set'
 import * as Metadata from '../metadata'
-
+export { default as prettyPrint } from './print'
 
 export class DataType {
     constructor(public typeName: string) { }
@@ -122,7 +122,7 @@ function modelToSchema(model: Function, key?: string): { schema: Schema; more: F
         links: []
     }
 
-    const objects = fieldsMd.filter(md => DataType.convert(md.type) == null)
+    const objects = fieldsMd.filter(md => DataType.convert(md.type) == DataType.Object)
 
     const more = objects.map(md => md.type)
     schema.links = objects.map(obj => (<IsomophicLink>{
